@@ -53,9 +53,6 @@ app.use("/recipes", recipeRoute);
 app.use("/userdata", userdataRoute);
 app.use(cors());
 
-var distDir = __dirname + "/dist/";
-app.use(express.static(distDir));
-
 const port = process.env.PORT || 8080;
 
 const server = app.listen(port, function () {
