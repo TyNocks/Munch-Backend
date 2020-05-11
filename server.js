@@ -9,6 +9,7 @@ const express = require("express"),
 
 const recipeRoute = require("./routes/recipe.route");
 const userdataRoute = require("./routes/userdata.route");
+const ingredientRoute = require('./routes/ingredient.route');
 mongoose.Promise = global.Promise;
 mongoose
   .connect(config.DB, {
@@ -51,6 +52,7 @@ app.use(cookieParser());
 app.options('*', cors(corsOptions));
 app.use("/recipes", recipeRoute);
 app.use("/userdata", userdataRoute);
+app.use("/ingredient", ingredientRoute)
 app.use(cors());
 
 const port = process.env.PORT || 8080;
