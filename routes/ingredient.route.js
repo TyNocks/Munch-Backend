@@ -37,25 +37,26 @@ const convertArrayToObject = (array, key) => {
     }, initialValue);
 };
 
-const sorting = function (x, y) {
-    let a = regex.map(reg => reg.test(x) ? 1 : 0).reduce((acc, cur) => acc + cur);
-    let b = regex.map(reg => reg.test(y) ? 1 : 0).reduce((acc, cur) => acc + cur);
-    return b - a;
-}
-
 
 ingredientRoutes.all("*", cors(corsOptions));
 
 ingredientRoutes.route('/search').post((req, res) => {
     let regex = req.body.search.map(x => new RegExp(x, 'i'));
-    IngredientSearch.find({ description: { $in: regex } }, { fdc_id: 1, description: 1 })
+    IngredientSearch.find({}, { fdc_id: 1, description: 1, _id: 0 }).limit(10000)
         .then(ingredients => {
-            Ingredient.find({ brand_owner: { $in: regex } }, { fdc_id: 1, brand_owner: 1 })
-                .then(ingredientsLong => {
-                    
-                })
-                .catch()
-            res.status(200).send(ingredients);
+            let counter = 0;
+            ingredients.forEach(ingredient => {
+                Ingredient.findOneAndUpdate({ 'fdc_id': ingredient['fdc_id'] }, { description: ingredient.description }).then(x => {
+                    IngredientSearch.findOneAndDelete({fdc_id: ingredient.fdc_id}).then(y => {
+                    counter += 1;
+                    if (counter % 20 == 0) { console.log(counter) }
+                    })
+                });
+            });
+            console.log('done');
+            res.status(200).send();
         })
         .catch(error => res.status(500).send(error))
-})
+});
+
+module.exports = ingredientRoutes;

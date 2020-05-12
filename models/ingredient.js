@@ -9,9 +9,10 @@ let Ingredient = new Schema({
     serving_size: { type: String },
     serving_size_unit: { type: String },
     household_serving_fulltext: { type: String },
-    branded_food_category: { type: String }
+    branded_food_category: { type: String },
+    description: { type: String }
 },
-{ collection: "Ingredients" }
+    { collection: "Ingredients" }
 );
 
 
