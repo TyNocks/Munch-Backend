@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 let Recipe = new Schema({
   _uid: {type: String},
   Title: {type: String},
-  Ingredients: [{type: String}],
+  Ingredients: [{type: Object}],
   Directions: [{type: String}],
   CookTime: {type: Number, default: 0},
   PrepTime: {type: Number, default: 0},

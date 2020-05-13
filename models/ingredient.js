@@ -10,12 +10,24 @@ let Ingredient = new Schema({
     serving_size_unit: { type: String },
     household_serving_fulltext: { type: String },
     branded_food_category: { type: String },
-    description: { type: String },
-
-    '1008': {type: Number}
+    description: { type: String }
 },
-    { collection: "Ingredients" }
+    {
+        collection: "Ingredients",
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true }
+    }
 );
+
+Ingredient.virtual('Calories', {
+    ref: 'Nutrient',
+    localField: 'fdc_id',
+    foreignField: 'fdc_id',
+    justOne: true,
+    options: {
+        match: { nutrient_id: 1008 }
+    }
+})
 
 
 module.exports = mongoose.model('Ingredient', Ingredient);

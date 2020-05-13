@@ -29,26 +29,24 @@ ingredientRoutes.all("*", cors(corsOptions));
 ingredientRoutes.route("/search").post((req, res) => {
   let regex = req.body.search.map((x) => new RegExp(x, "i"));
   Ingredient.find(
-    { description: { $in: regex } },
     {
-        fdc_id: 1,
-        description: 1,
-        brand_owner: 1,
-        _id: 0
+      $or: [
+        { description: { $all: regex } }
+      ]
+    },
+    {
+      fdc_id: 1,
+      description: 1,
+      brand_owner: 1,
+      _id: 0
     }
   )
+    .populate('Calories')
     .limit(30)
-    .then((ingredients) => {
-        let counter = 0;
-        ingredients.forEach(ing => {
-            Nutrient.find({fdc_id: ing.fdc_id, nutrient_id: 1008}, { amount: 1 }).then(nutrient => {
-                counter += 1;
-                ing['1008'] = nutrient.amount;
-                if (counter === ingredients.length) { res.status(200).send(ingredients); }
-            })
-        })
-    })
+    .then((ingredients) => res.status(200).send(ingredients))
     .catch((error) => res.status(500).send(error));
 });
+
+
 
 module.exports = ingredientRoutes;
