@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 
 let IngredientSearch = new Schema({
-    fdc_id: { type: String },
+    fdc_id: { type: String, index: true },
     description: { type: String }
 },
     {

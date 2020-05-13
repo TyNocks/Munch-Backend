@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 let Ingredient = new Schema({
-    fdc_id: { type: String },
+    fdc_id: { type: String, index: true },
     getin_upc: { type: String },
     brand_owner: { type: String },
     ingredients: { type: String },
