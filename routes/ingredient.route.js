@@ -38,7 +38,16 @@ ingredientRoutes.route("/search").post((req, res) => {
     }
   )
     .limit(30)
-    .then((ingredients) => res.status(200).send(ingredients))
+    .then((ingredients) => {
+        let counter = 0;
+        ingredients.forEach(ing => {
+            Nutrient.find({fdc_id: ing.fdc_id, nutrient_id: 1008}, { amount: 1 }).then(nutrient => {
+                counter += 1;
+                ing['1008'] = nutrient.amount;
+                if (counter === ingredients.length) { res.status(200).send(ingredients); }
+            })
+        })
+    })
     .catch((error) => res.status(500).send(error));
 });
 
