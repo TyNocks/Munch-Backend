@@ -28,25 +28,24 @@ ingredientRoutes.all("*", cors(corsOptions));
 
 ingredientRoutes.route("/search").post((req, res) => {
   let regex = req.body.search.map((x) => new RegExp(x, "i"));
-  Ingredient.find(
+  Ingredient.aggregate([
+    { $match: { $text: { $search: req.body.search.join(" ") } } },
     {
-      $or: [
-        { description: { $all: regex } }
-      ]
+      $project: {
+        fdc_id: 1,
+        description: 1,
+        brand_owner: 1,
+        score: { $meta: "textScore" },
+      },
     },
-    {
-      fdc_id: 1,
-      description: 1,
-      brand_owner: 1,
-      _id: 0
-    }
-  )
-    .populate('Calories')
-    .limit(30)
-    .then((ingredients) => res.status(200).send(ingredients))
+    { $sort: { description: 1 } },
+    { $sort: { score: { $meta: "textScore" } } },
+    { $limit: 30 },
+  ])
+    .then((ingredients) => {
+      Ingredient.populate(ingredients, {path: 'Calories'}, (err, results) => res.status(200).send(results));
+    })
     .catch((error) => res.status(500).send(error));
 });
-
-
 
 module.exports = ingredientRoutes;
