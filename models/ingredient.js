@@ -19,45 +19,11 @@ let Ingredient = new Schema({
     }
 );
 
-Ingredient.virtual('Calories', {
+Ingredient.virtual('nutrients', {
     ref: 'Nutrient',
     localField: 'fdc_id',
     foreignField: 'fdc_id',
-    justOne: true,
-    options: {
-        match: { nutrient_id: 1008 }
-    }
+    justOne: false
 })
-
-Ingredient.virtual('Fat', {
-    ref: 'Nutrient',
-    localField: 'fdc_id',
-    foreignField: 'fdc_id',
-    justOne: true,
-    options: {
-        match: { nutrient_id: 1004 }
-    }
-})
-
-Ingredient.virtual('Protein', {
-    ref: 'Nutrient',
-    localField: 'fdc_id',
-    foreignField: 'fdc_id',
-    justOne: true,
-    options: {
-        match: { nutrient_id: 1003 }
-    }
-})
-
-Ingredient.virtual('Carb', {
-    ref: 'Nutrient',
-    localField: 'fdc_id',
-    foreignField: 'fdc_id',
-    justOne: true,
-    options: {
-        match: { nutrient_id: 1005 }
-    }
-})
-
 
 module.exports = mongoose.model('Ingredient', Ingredient);

@@ -35,17 +35,28 @@ ingredientRoutes.route("/search").post((req, res) => {
         fdc_id: 1,
         description: 1,
         brand_owner: 1,
+        serving_size: 1,
         score: { $meta: "textScore" },
       },
     },
     { $sort: { description: 1 } },
-    { $sort: { score: { $meta: "textScore" } } },
+    { $sort: { score: { $meta: "textScore" } } }, 
     { $limit: 30 },
   ])
     .then((ingredients) => {
-      Ingredient.populate(ingredients, {path: 'Calories'}, (err, results) => res.status(200).send(results));
+      Ingredient.populate(ingredients, { path: 'nutrients', match: { nutrient_id: 1008 } }, (err, results) => res.status(200).send(results));
     })
     .catch((error) => res.status(500).send(error));
 });
+
+ingredientRoutes.route("/detail").post((req, res) => {
+  Ingredient.findOne({ fdc_id: req.body.id })
+    .populate({
+      path: 'nutrients',
+      match: { nutrient_id: { $in: [1003, 1004, 1005, 1008] } }
+    })
+    .then(ingredient => res.status(200).send(ingredient))
+    .catch((error) => res.status(500).send(error))
+})
 
 module.exports = ingredientRoutes;
