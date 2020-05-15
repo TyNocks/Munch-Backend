@@ -36,6 +36,7 @@ ingredientRoutes.route("/search").post((req, res) => {
         description: 1,
         brand_owner: 1,
         serving_size: 1,
+        serving_size_unit: 1,
         score: { $meta: "textScore" },
       },
     },
@@ -49,7 +50,7 @@ ingredientRoutes.route("/search").post((req, res) => {
     .catch((error) => res.status(500).send(error));
 });
 
-ingredientRoutes.route("/detail").post((req, res) => {
+ingredientRoutes.route("/detailOne").post((req, res) => {
   Ingredient.findOne({ fdc_id: req.body.id })
     .populate({
       path: 'nutrients',
@@ -57,6 +58,18 @@ ingredientRoutes.route("/detail").post((req, res) => {
     })
     .then(ingredient => res.status(200).send(ingredient))
     .catch((error) => res.status(500).send(error))
+});
+
+ingredientRoutes.route("/detailMany").post((req, res) => {
+  Ingredient.find({fdc_id: {$in: req.body.ids}})
+  .populate({
+    path: 'nutrients',
+    match: { nutrient_id: { $in: [1003, 1004, 1005, 1008] } }
+  })
+  .then(ingredient => res.status(200).send(ingredient))
+  .catch((error) => res.status(500).send(error))
 })
+
+
 
 module.exports = ingredientRoutes;
