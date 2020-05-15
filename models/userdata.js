@@ -11,7 +11,7 @@ let UserData = new Schema({
   salt: {type: String},
   mealData: {type: Object, default: {register: '1'}}
 },{
-    collection: 'UserData'
+    collection: 'Users'
 });
 
 UserData.methods.setPassword = function(password) {
