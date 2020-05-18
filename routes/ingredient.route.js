@@ -41,11 +41,16 @@ ingredientRoutes.route("/search").post((req, res) => {
       },
     },
     { $sort: { description: 1 } },
-    { $sort: { score: { $meta: "textScore" } } }, 
+    { $sort: { score: { $meta: "textScore" } } },
+    { $match: { score: { $lt: 1.6 } } },
     { $limit: 30 },
   ])
     .then((ingredients) => {
-      Ingredient.populate(ingredients, { path: 'nutrients', match: { nutrient_id: 1008 } }, (err, results) => res.status(200).send(results));
+      Ingredient.populate(
+        ingredients,
+        { path: "nutrients", match: { nutrient_id: 1008 } },
+        (err, results) => res.status(200).send(results)
+      );
     })
     .catch((error) => res.status(500).send(error));
 });
@@ -53,23 +58,21 @@ ingredientRoutes.route("/search").post((req, res) => {
 ingredientRoutes.route("/detailOne").post((req, res) => {
   Ingredient.findOne({ fdc_id: req.body.id })
     .populate({
-      path: 'nutrients',
-      match: { nutrient_id: { $in: [1003, 1004, 1005, 1008] } }
+      path: "nutrients",
+      match: { nutrient_id: { $in: [1003, 1004, 1005, 1008] } },
     })
-    .then(ingredient => res.status(200).send(ingredient))
-    .catch((error) => res.status(500).send(error))
+    .then((ingredient) => res.status(200).send(ingredient))
+    .catch((error) => res.status(500).send(error));
 });
 
 ingredientRoutes.route("/detailMany").post((req, res) => {
-  Ingredient.find({fdc_id: {$in: req.body.ids}})
-  .populate({
-    path: 'nutrients',
-    match: { nutrient_id: { $in: [1003, 1004, 1005, 1008] } }
-  })
-  .then(ingredient => res.status(200).send(ingredient))
-  .catch((error) => res.status(500).send(error))
-})
-
-
+  Ingredient.find({ fdc_id: { $in: req.body.ids } })
+    .populate({
+      path: "nutrients",
+      match: { nutrient_id: { $in: [1003, 1004, 1005, 1008] } },
+    })
+    .then((ingredient) => res.status(200).send(ingredient))
+    .catch((error) => res.status(500).send(error));
+});
 
 module.exports = ingredientRoutes;
