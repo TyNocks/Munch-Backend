@@ -79,7 +79,7 @@ recipeRoutes.route("/detail").post((req, res) => {
 recipeRoutes.route("/search").post((req, res) => {
   regex = req.body.search.map(x => new RegExp(x, 'i'));
   if (req.body.search[0] != '' ) {
-  Recipe.find({'tags': {$all: regex}}, {Title: 1, CalPer: 1})
+  Recipe.find({'tags': {$all: regex}}, {Title: 1, CalPer: 1, Servings: 1})
     .then((recipes) => res.status(200).send(recipes))
     .catch((error) => res.status(500).send({ error: error }));
   } else {
