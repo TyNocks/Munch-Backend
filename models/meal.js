@@ -9,4 +9,11 @@ let Meal = new Schema({
     CalTotal: {type: Number}
 },{collection: "Meals"})
 
+const Meal = {
+    date: new Date(),
+    _uid: '',
+    recipes: [],
+    
+}
+
 module.exports = mongoose.model('Meal', Meal);
