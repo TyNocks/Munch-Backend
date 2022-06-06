@@ -3,51 +3,38 @@ const app = express();
 const userdataRoutes = express.Router();
 const jwt = require("jsonwebtoken");
 const config = require("../config");
+const { MongoDB } = require('mongodb');
 const cors = require("cors");
+const userdata = require("../models/userdata");
 
-// Require Product model in our routes module
-let UserData = require("../models/userdata");
 
-const allowedOrigins = [
-  "capacitor://localhost",
-  "ionic://localhost",
-  "http://localhost",
-  "http://localhost:8080",
-  "http://localhost:8100",
-];
-
-// Reflect the origin if it's in the allowed list or not defined (cURL, Postman, etc.)
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (allowedOrigins.includes(origin) || !origin) {
-      callback(null, true);
-    } else {
-      //callback(new Error('Origin not allowed by CORS'));
-      callback(null, true);
-    }
-  },
-};
-
-userdataRoutes.all("*", cors(corsOptions));
+userdataRoutes.all("*", cors(config.corsOptions));
 
 // Register route
 userdataRoutes.route("/register").post((req, res) => {
-  UserData.find({ email: req.body.email }).then((result) => {
-    switch (result.length) {
+
+  userDB = req.app.locals.db.db('Munch').collection('User');
+
+  userDB.find({ email: req.body.email }).toArray().then( check => {
+    console.log(check);
+    switch (check.length) {
       case 0:
-        let user = new UserData();
+        let user =  userdata;
         user.email = req.body.email;
+        console.log(user)
         user.setPassword(req.body.password);
-        user
-          .save()
+          userDB.insertOne(user.json())
           .then(() => res.status(200).send({ uid: user._uid }))
           .catch((err) => res.status(500).send(err));
         break;
       default:
+        console.log('in switch default');
         res.status(500).send({ message: "Email already registered." });
         break;
     }
   });
+  
+  
 });
 
 //Token  login
@@ -75,8 +62,12 @@ userdataRoutes.route("/token").post((req, res) => {
 
 //Login route
 userdataRoutes.route("/login").post((req, res) => {
-  UserData.findOne({ email: req.body.email })
+
+  userDB = req.app.locals.db.db('Munch').collection('User');
+
+  userDB.findOne({ email: req.body.email })
     .then(user => {
+      user = Object.assign(userdata, user);
       switch (user) {
         case null:
           res.status(500).send({message: 'User not found.'});
@@ -96,7 +87,10 @@ userdataRoutes.route("/login").post((req, res) => {
           break;
       }
     })
-    .catch(err => res.status(500).send({error: err}));
+    .catch(err => {
+      console.log(err);
+      res.status(500).send({error: err});
+    });
 });
 
 //Logout route

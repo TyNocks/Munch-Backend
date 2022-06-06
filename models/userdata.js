@@ -1,28 +1,35 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-var crypto = require('crypto');
+const crypto = require('crypto');
 
 
-// Define collection and schema for Product
-let UserData = new Schema({
-  email: {type: String, required: true},
-  _uid: {type: String},
-  hash: {type: String},
-  salt: {type: String},
-  mealData: {type: Object, default: {register: '1'}}
-},{
-    collection: 'Users'
-});
+const UserData =  {
 
-UserData.methods.setPassword = function(password) {
-  this.salt = crypto.randomBytes(16).toString('hex');
-  this.hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64, 'sha512').toString('hex');
-  this._uid = crypto.randomBytes(16).toString('hex');
-}
+  email: '',
+  _uid: '',
+  hash: '',
+  salt: '',
+  mealData: {},
 
-UserData.methods.validPassword = function(password) {
-  var hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64, 'sha512').toString('hex'); 
-  return this.hash === hash;
-}
+  setPassword: function(password) {
+      UserData.salt = crypto.randomBytes(16).toString('hex');
+      UserData.hash = crypto.pbkdf2Sync(password, UserData.salt, 1000, 64, 'sha512').toString('hex');
+      UserData._uid = crypto.randomBytes(16).toString('hex');
+  },
 
-module.exports = mongoose.model('UserData', UserData);
+  validPassword: function(password) {
+    var hash = crypto.pbkdf2Sync(password, UserData.salt, 1000, 64, 'sha512').toString('hex'); 
+    return UserData.hash === hash;
+  },
+
+  json: function() {
+    return {
+      email: UserData.email,
+      _uid: UserData._uid,
+      hash: UserData.hash,
+      salt: UserData.salt,
+      mealData: UserData.mealData
+    }
+  }
+
+};
+
+module.exports = UserData;

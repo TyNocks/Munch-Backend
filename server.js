@@ -2,29 +2,18 @@ const express = require("express"),
   path = require("path"),
   bodyParser = require("body-parser"),
   cors = require("cors"),
-  mongoose = require("mongoose"),
   cookieParser = require("cookie-parser"),
-  config = require("./DB");
+  config = require("./DB"),
+  {MongoClient} = require('mongodb');
+
+const port = process.env.PORT || 8080;
 
 
 const recipeRoute = require("./routes/recipe.route");
 const userdataRoute = require("./routes/userdata.route");
 const ingredientRoute = require('./routes/ingredient.route');
-mongoose.Promise = global.Promise;
-mongoose
-  .connect(config.DB, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-  })
-  .then(
-    () => {
-      console.log("Database is connected");
-    },
-    (err) => {
-      console.log("Can not connect to the database" + err);
-    }
-  );
+const mealRoutes = require('./routes/meal.route');
+
 
   const allowedOrigins = [
     'capacitor://localhost',
@@ -52,11 +41,18 @@ app.use(cookieParser());
 app.options('*', cors(corsOptions));
 app.use("/recipes", recipeRoute);
 app.use("/userdata", userdataRoute);
-app.use("/ingredient", ingredientRoute)
+app.use("/ingredient", ingredientRoute);
+app.use('/meals', mealRoutes);
 app.use(cors());
 
-const port = process.env.PORT || 8080;
-
-const server = app.listen(port, function () {
-  console.log("Listening on port " + port);
+MongoClient.connect(config.DB, (err, db) => {
+  if (err) {
+    logger.warn(`Failed to connect to the database. ${err.stack}`);
+  }
+  app.locals.db = db;
+  app.listen(port, function () {
+    console.log("Listening on port " + port);
+  });
 });
+
+
