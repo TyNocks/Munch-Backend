@@ -28,7 +28,6 @@ userdataRoutes.route("/register").post((req, res) => {
           .catch((err) => res.status(500).send(err));
         break;
       default:
-        console.log('in switch default');
         res.status(500).send({ message: "Email already registered." });
         break;
     }
