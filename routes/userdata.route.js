@@ -24,7 +24,11 @@ userdataRoutes.route("/register").post((req, res) => {
         console.log(user)
         user.setPassword(req.body.password);
           userDB.insertOne(user.json())
-          .then(() => res.status(200).send({ uid: user._uid }))
+          .then(() => res.status(200).send({
+            _uid: decoded._uid,
+            tokenPass: true,
+            token: jwt.sign({ _uid: decoded._uid }, config.secret, { expiresIn: "72h" })
+          }))
           .catch((err) => res.status(500).send(err));
         break;
       default:
