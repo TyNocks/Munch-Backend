@@ -15,19 +15,18 @@ userdataRoutes.route("/register").post((req, res) => {
 
   userDB = req.app.locals.db.db('Munch').collection('User');
 
-  userDB.find({ email: req.body.email }).toArray().then( check => {
+  userDB.find({ email: req.body.email }).toArray().then(check => {
     console.log(check);
     switch (check.length) {
       case 0:
-        let user =  userdata;
+        let user = userdata;
         user.email = req.body.email;
         console.log(user)
         user.setPassword(req.body.password);
-          userDB.insertOne(user.json())
+        userDB.insertOne(user.json())
           .then(() => res.status(200).send({
-            _uid: decoded._uid,
-            tokenPass: true,
-            token: jwt.sign({ _uid: decoded._uid }, config.secret, { expiresIn: "72h" })
+            accessToken: jwt.sign({ _uid: user._uid }, config.secret, { expiresIn: "12h" }),
+            refreshToken: jwt.sign({ _uid: user._uid }, config.secret, { expiresIn: "72h" })
           }))
           .catch((err) => res.status(500).send(err));
         break;
@@ -36,27 +35,26 @@ userdataRoutes.route("/register").post((req, res) => {
         break;
     }
   });
-  
-  
+
+
 });
 
 //Token  login
 userdataRoutes.route("/token").post((req, res) => {
   switch (req.body.token) {
     case undefined:
-      res.status(200).send({ tokenPass: false });
+      res.status(205).send({message: "No access token."});
       break;
     default:
       jwt.verify(req.body.token, config.secret, (err, decoded) => {
         switch (decoded) {
           case undefined:
-            res.status(200).send({ tokenPass: false, error: err });
+            res.status(205).send({ error: err });
             break;
           default:
             res.status(200).send({
-              _uid: decoded._uid,
-              tokenPass: true,
-              token: jwt.sign({ _uid: decoded._uid }, config.secret, { expiresIn: "72h" })
+              accessToken: jwt.sign({ _uid: user._uid }, config.secret, { expiresIn: "12h" }),
+              refreshToken: jwt.sign({ _uid: user._uid }, config.secret, { expiresIn: "72h" })
             });
         }
       });
@@ -73,17 +71,17 @@ userdataRoutes.route("/login").post((req, res) => {
       user = Object.assign(userdata, user);
       switch (user) {
         case null:
-          res.status(500).send({message: 'User not found.'});
+          res.status(500).send({ message: 'User not found.' });
           break;
         default:
           switch (user.validPassword(req.body.password)) {
             case false:
-              res.status(500).send({message: 'Password incorrect.'});
+              res.status(500).send({ message: 'Password incorrect.' });
               break;
             case true:
               res.status(200).send({
-                _uid: user._uid,
-                token: jwt.sign({ _uid: user._uid }, config.secret, {expiresIn: "72h"})
+                accessToken: jwt.sign({ _uid: user._uid }, config.secret, { expiresIn: "12h" }),
+                refreshToken: jwt.sign({ _uid: user._uid }, config.secret, { expiresIn: "72h" })
               });
               break;
           }
@@ -92,7 +90,7 @@ userdataRoutes.route("/login").post((req, res) => {
     })
     .catch(err => {
       console.log(err);
-      res.status(500).send({error: err});
+      res.status(500).send({ error: err });
     });
 });
 
@@ -217,6 +215,6 @@ checkData = function (data, year, month, day) {
   return data;
 };
 
-passHash = function (password) {};
+passHash = function (password) { };
 
 module.exports = userdataRoutes;
