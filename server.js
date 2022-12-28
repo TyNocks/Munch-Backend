@@ -1,58 +1,35 @@
-const express = require("express"),
-  path = require("path"),
-  bodyParser = require("body-parser"),
-  cors = require("cors"),
-  cookieParser = require("cookie-parser"),
-  config = require("./DB"),
-  {MongoClient} = require('mongodb');
-
-const port = process.env.PORT || 8080;
-
-
-const recipeRoute = require("./routes/recipe.route");
-const userdataRoute = require("./routes/userdata.route");
-const ingredientRoute = require('./routes/ingredient.route');
-const mealRoutes = require('./routes/meal.route');
+//
+//  Imports
+//
+require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const userRoute = require('./routes/userRoute');
+const recipeRoute = require('./routes/recipeRoute');
 
 
-  const allowedOrigins = [
-    'capacitor://localhost',
-    'ionic://localhost',
-    'http://localhost',
-    'http://localhost:8080',
-    'http://localhost:8100'
-  ];
 
-  // Reflect the origin if it's in the allowed list or not defined (cURL, Postman, etc.)
-  const corsOptions = {
-    origin: (origin, callback) => {
-      if (allowedOrigins.includes(origin) || !origin) {
-        callback(null, true);
-      } else {
-        //callback(new Error('Origin not allowed by CORS'));
-      callback(null, true);
-      }
-    }
-  }
+//
+//  Database connection.
+//
+const mongoString = 'mongodb://127.0.0.1:27017/Munch';
+mongoose.connect(mongoString);
+const database = mongoose.connection;
+database.on('error', (error) => { console.log(error) } );
+database.once('connected', () => { console.log('Database Connected') } );
 
+
+//
+// server setup
+//
 const app = express();
-app.use(bodyParser.json());
-app.use(cookieParser());
-app.options('*', cors(corsOptions));
-app.use("/recipes", recipeRoute);
-app.use("/userdata", userdataRoute);
-app.use("/ingredient", ingredientRoute);
-app.use('/meals', mealRoutes);
-app.use(cors());
+const port = process.env.PORT || 3000
 
-MongoClient.connect(config.DB, (err, db) => {
-  if (err) {
-    logger.warn(`Failed to connect to the database. ${err.stack}`);
-  }
-  app.locals.db = db;
-  app.listen(port, function () {
-    console.log("Listening on port " + port);
-  });
-});
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/auth', userRoute);
+app.use('/recipe', recipeRoute);
 
-
+app.listen(port, () => {
+    console.log(`Server Started at ${3000}`)
+})
