@@ -62,7 +62,7 @@ router.get('/me', auth, async (req, res) => {
 
 router.delete('/me', auth, async (req, res) => {
     try {
-        await req.user.deleteOne({'_id': req.user._id});
+        await req.user.deleteOne({'_id': req.user});
         res.send()
     } catch (err) {
         res.status(400).send({'error': err});
