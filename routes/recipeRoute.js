@@ -11,6 +11,7 @@ router.post('/new', auth, async (req, res) => {
             created: new Date(),
             modified: new Date(),
             ingredients: req.body.ingredients,
+            amounts: req.body.amounts,
             steps: req.body.steps
         }
         rec = new Recipe(recipe);
@@ -25,10 +26,17 @@ router.post('/id', auth, async (req, res) => {
     try {
         let recipe = await Recipe.findById(req.body._id)
             .populate({
-                path: 'ingredients.ingredient'
+                path: 'ingredients',
+                populate: {
+                    path: "nutrients",
+                    populate: {
+                        path: "nutrient_name"
+                    }
+                }
             });
         res.send(recipe);
     } catch (err) {
+        console.log(err)
         res.status(500).send(err);
     }
 });
