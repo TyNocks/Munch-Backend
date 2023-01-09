@@ -22,7 +22,8 @@ const UserSchema = new mongoose.Schema({
             type: String,
             required: true
         }
-    }]
+    }],
+    favorites: [{type: mongoose.Types.ObjectId, ref: "Recipe"}]
 },
     {
         collection: 'User'

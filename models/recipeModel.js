@@ -5,9 +5,11 @@ let RecipeSchema = new Schema({
     uid: { type: Schema.Types.ObjectId, ref: 'User' },
     created: { type: Date },
     modified: { type: Date },
+    name: { type: String, required: true },
     ingredients: [{ type: Schema.Types.ObjectId, ref: 'Ingredient' }],
     amounts: [{type: Number}],
-    steps: [{type: String}]
+    steps: [{type: String}],
+    favorites: {type: Number , default: 0}
 },
 {
     collection: 'Recipes'
