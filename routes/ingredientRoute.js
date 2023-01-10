@@ -4,6 +4,12 @@ const auth = require('../middleware/auth');
 
 router = express.Router();
 
+/*
+*
+* Search for ingredient.
+*
+*/
+
 router.post('/search', async (req, res) => {
     try {
         ings = await Ingredient.aggregate([
@@ -29,6 +35,12 @@ router.post('/search', async (req, res) => {
     }
 });
 
+/*
+*
+* Get ingredients from list of ids
+*
+*/
+
 router.post('/batch', async (req, res) => {
     try {
         const ings = await Ingredient.find({
@@ -41,6 +53,12 @@ router.post('/batch', async (req, res) => {
         res.status(500).send({ 'error': err });
     }
 });
+
+/*
+*
+* Fill in nutrient information for single ingredient.
+*
+*/
 
 router.post('/detail', async (req, res) => {
     try {

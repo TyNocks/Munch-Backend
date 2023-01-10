@@ -4,6 +4,12 @@ const auth = require('../middleware/auth')
 
 router = express.Router();
 
+/*
+*
+* Create new user.
+*
+*/
+
 router.post('/register', async (req, res) => {
     const user = new User(req.body)
     try {
@@ -17,6 +23,12 @@ router.post('/register', async (req, res) => {
     }
 });
 
+/*
+*
+* Login
+*
+*/
+
 router.post('/login', async (req, res) => {
     try {
         const user = await User.findByEmail(req.body.email, req.body.password);
@@ -28,6 +40,12 @@ router.post('/login', async (req, res) => {
         res.status(400).send({ error: err })
     }
 });
+
+/*
+*
+* Logout
+*
+*/
 
 router.post('/logout', auth, async (req, res) => {
     try {
@@ -41,6 +59,13 @@ router.post('/logout', auth, async (req, res) => {
     }
 });
 
+/*
+*
+* Logout from all devices.
+* Deletes all saved login tokens.
+*
+*/
+
 router.post('/logout/all', auth, async (req, res) => {
     try {
         req.user.tokens = [];
@@ -51,6 +76,12 @@ router.post('/logout/all', auth, async (req, res) => {
     }
 });
 
+/*
+*
+* Get details about current account.
+*
+*/
+
 router.get('/me', auth, async (req, res) => {
     try {
         const user = await User.find({'_id': req.user});
@@ -60,6 +91,11 @@ router.get('/me', auth, async (req, res) => {
     }
 });
 
+/*
+*
+* Delete account.
+*
+*/
 router.delete('/me', auth, async (req, res) => {
     try {
         await req.user.deleteOne({'_id': req.user});
@@ -69,6 +105,12 @@ router.delete('/me', auth, async (req, res) => {
     }
 
 });
+
+/*
+*
+* Update account information.
+*
+*/
 
 router.patch('/me', auth, async (req, res) => {
     const updates = Object.keys(req.body);
