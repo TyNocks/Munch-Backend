@@ -1,7 +1,7 @@
 const DB = {
     u: 'backend',
     p: 'tyrMUNCHsnap',
-    uri: 'mongodb+srv://backend:tyrMUNCHsnap@cluster0.gkyztbj.mongodb.net/Munch?retryWrites=true&w=majority'
+    uri: process.env.MONGO_URI
 }
 
 module.exports = DB;

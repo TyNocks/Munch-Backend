@@ -14,7 +14,6 @@ const DB = require('./db')
 //
 //  Database connection.
 //
-const mongoString = 'mongodb://127.0.0.1:27017/Munch';
 mongoose.connect(DB.uri);
 const database = mongoose.connection;
 database.on('error', (error) => { console.log(error) } );
