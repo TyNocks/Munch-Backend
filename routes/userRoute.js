@@ -84,7 +84,7 @@ router.post('/logout/all', auth, async (req, res) => {
 
 router.get('/me', auth, async (req, res) => {
     try {
-        const user = await User.find({'_id': req.user});
+        const user = await User.findOne({'_id': req.user});
         res.status(200).send(user)
     } catch (err) {
         res.status(501).send({error: err})
