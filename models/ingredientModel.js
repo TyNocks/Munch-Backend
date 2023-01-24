@@ -54,6 +54,7 @@ NutrientSchema.virtual('nutrient_name', {
     ref: 'nDef',
     localField: 'nutrient_id',
     foreignField: 'nutrient_nbr',
+    justOne: true
 })
 
 //
