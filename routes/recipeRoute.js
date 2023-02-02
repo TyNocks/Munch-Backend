@@ -67,11 +67,40 @@ router.post('/search', async (req, res) => {
 
 /*
 *
+* Recipe search autocomplete
+*
+*/
+
+router.post('/autocomplete', async (req, res) => {
+    try {
+        titles = await Recipe.aggregate([
+            {
+                $search: {
+                  index: 'RecipeSearchAutocomplete',
+                  text: {
+                    query: res.body['term'],
+                    path: {
+                      'wildcard': '*'
+                    }
+                  }
+                }
+              },
+            {$limit : 5},
+            {$project: {_id: 0, title: 1}}
+        ])
+        res.send(titles);;
+    } catch (err) {
+        res.status(500).send(err);
+    }
+})
+
+/*
+*
 * Get full recipe details
 *
 */
 
-router.post('/id', auth, async (req, res) => {
+router.post('/id', async (req, res) => {
     try {
         let recipe = await Recipe.findById(req.body._id)
             .populate({
