@@ -90,6 +90,7 @@ router.post('/autocomplete', async (req, res) => {
         ])
         res.send(titles);;
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 })
