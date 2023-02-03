@@ -79,9 +79,7 @@ router.post('/autocomplete', async (req, res) => {
                   index: 'RecipeSearchAutocomplete',
                   text: {
                     query: req.body['term'],
-                    path: {
-                      'wildcard': '*'
-                    }
+                    path: "title"
                   }
                 }
               },
