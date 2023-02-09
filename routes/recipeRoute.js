@@ -57,7 +57,16 @@ router.post('/search', async (req, res) => {
             {
                 '$limit': 10
             }
-        ]);
+        ]).populate({
+            path: 'ingredients',
+            populate: {
+                path: "nutrients",
+                populate: {
+                    path: "nutrient_name"
+                }
+            }
+        });
+        res.send(titles);
 
         res.send(recipes)
     } catch (err) {
@@ -88,7 +97,6 @@ router.post('/autocomplete', async (req, res) => {
             {$limit : 5},
             {$project: {_id: 0, title: 1}}
         ])
-        res.send(titles);;
     } catch (err) {
         console.log(err);
         res.status(500).send(err);
