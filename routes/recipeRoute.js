@@ -67,9 +67,8 @@ router.post('/search', async (req, res) => {
                 }
             }
         });
-        res.send(titles);
 
-        res.send(recipes)
+        res.send(recipes);
     } catch (err) {
         res.status(500).send({ 'error': err })
     }
