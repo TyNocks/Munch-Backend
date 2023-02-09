@@ -57,7 +57,8 @@ router.post('/search', async (req, res) => {
             {
                 '$limit': 10
             }
-        ]).populate({
+        ])
+        recipes = await Recipe.populate(recipes, {
             path: 'ingredients',
             populate: {
                 path: "nutrients",
@@ -94,8 +95,8 @@ router.post('/autocomplete', async (req, res) => {
                     }
                 }
             },
-            {$limit : 5},
-            {$project: {_id: 0, title: 1}}
+            { $limit: 5 },
+            { $project: { _id: 0, title: 1 } }
         ])
     } catch (err) {
         console.log(err);
