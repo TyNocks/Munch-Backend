@@ -96,7 +96,9 @@ router.post('/autocomplete', async (req, res) => {
             },
             { $limit: 5 },
             { $project: { _id: 0, title: 1 } }
-        ])
+        ]);
+
+        res.send(titles);
     } catch (err) {
         console.log(err);
         res.status(500).send(err);
