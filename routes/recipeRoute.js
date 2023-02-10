@@ -85,10 +85,13 @@ router.post('/autocomplete', async (req, res) => {
         titles = await Recipe.aggregate([
             {
                 '$search': {
-                    'autocomplete': {
+                    'index': 'RecipeSearch',
+                    'text': {
                         'query': req.body['term'],
                         'tokenOrder': 'any',
-                        'path': 'title'
+                        'path': {
+                            'wildcard': '*'
+                        }
                     }
                 }
             },
