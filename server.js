@@ -4,7 +4,6 @@ const express = require("express"),
   cors = require("cors"),
   cookieParser = require("cookie-parser"),
   config = require("./DB"),
-  logger = require("logger"),
   {MongoClient} = require('mongodb');
 
 const port = process.env.PORT || 8080;
@@ -48,7 +47,7 @@ app.use(cors());
 
 MongoClient.connect(config.DB, (err, db) => {
   if (err) {
-    logger.Logger.warn(`Failed to connect to the database. ${err.stack}`);
+    console.warn(`Failed to connect to the database. ${err.stack}`);
   }
   app.locals.db = db;
   app.listen(port, function () {
