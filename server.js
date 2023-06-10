@@ -20,7 +20,8 @@ const mealRoutes = require('./routes/meal.route');
     'ionic://localhost',
     'http://localhost',
     'http://localhost:8080',
-    'http://localhost:8100'
+    'http://localhost:8100',
+    '*'
   ];
 
   // Reflect the origin if it's in the allowed list or not defined (cURL, Postman, etc.)
@@ -40,7 +41,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.options('*', cors(corsOptions));
 app.use("/recipes", recipeRoute);
-app.use("/userdata", userdataRoute);
+app.use("/auth", userdataRoute);
 app.use("/ingredient", ingredientRoute);
 app.use('/meals', mealRoutes);
 app.use(cors());
