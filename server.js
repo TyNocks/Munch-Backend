@@ -48,7 +48,7 @@ app.use(cors());
 
 MongoClient.connect(config.DB, (err, db) => {
   if (err) {
-    logger.warn(`Failed to connect to the database. ${err.stack}`);
+    logger.Logger.warn(`Failed to connect to the database. ${err.stack}`);
   }
   app.locals.db = db;
   app.listen(port, function () {
