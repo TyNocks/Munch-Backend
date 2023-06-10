@@ -1,6 +1,6 @@
 module.exports = {
-    //DB: process.env.MONGODB_URI
-    DB: 'mongodb://localhost:27017'
+    DB: process.env.MONGODB_URI
+    //DB: 'mongodb://localhost:27017'
   };
 
   

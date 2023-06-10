@@ -4,6 +4,7 @@ const express = require("express"),
   cors = require("cors"),
   cookieParser = require("cookie-parser"),
   config = require("./DB"),
+  logger = require("logger"),
   {MongoClient} = require('mongodb');
 
 const port = process.env.PORT || 8080;
