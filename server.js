@@ -37,7 +37,8 @@ const mealRoutes = require('./routes/meal.route');
   }
 
 const app = express();
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({extended: true}))
 app.use(cookieParser());
 app.options('*', cors(corsOptions));
 app.use("/recipes", recipeRoute);
