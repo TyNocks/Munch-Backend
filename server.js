@@ -16,12 +16,7 @@ const mealRoutes = require('./routes/meal.route');
 
 
   const allowedOrigins = [
-    'capacitor://localhost',
-    'ionic://localhost',
-    'http://localhost',
-    'http://localhost:8080',
-    'http://localhost:8100',
-    '*'
+    'http://192.168.1.12:8100'
   ];
 
   // Reflect the origin if it's in the allowed list or not defined (cURL, Postman, etc.)
