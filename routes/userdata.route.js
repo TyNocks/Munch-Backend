@@ -87,6 +87,7 @@ userdataRoutes.route("/login").post((req, res) => {
     })
     .catch(err => {
       //unlikely but possible error. Add specific handling as they happen.
+      console.log(err);
       res.status(500).send({ error: err });
     });
 });
